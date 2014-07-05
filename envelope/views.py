@@ -114,7 +114,7 @@ class ContactView(FormView):
         When the form has errors, display it again.
         """
         messages.error(self.request,
-                       _("There was en error in the contact form."),
+                       _("There was an error in the contact form."),
                        fail_silently=True)
         return self.render_to_response(self.get_context_data(form=form))
 
