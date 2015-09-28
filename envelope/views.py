@@ -9,13 +9,22 @@ Views used to process the contact form.
 import logging
 
 from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseBadRequest
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
+from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
+
+from allauth.account.decorators import verified_email_required
+from articles.utils import slugify_unique, check_active
+from companies.views import get_company
 from envelope import signals
-from envelope.forms import ContactForm
+from envelope.forms import ContactForm, CompanyContactForm
+from envelope.models import CompanyContact
 
 
 logger = logging.getLogger('envelope.views')
@@ -117,6 +126,58 @@ class ContactView(FormView):
                        _("There was an error in the contact form."),
                        fail_silently=True)
         return self.render_to_response(self.get_context_data(form=form))
+
+
+class CompanyContactAdd(CreateView):
+    form_class = CompanyContactForm
+    template_name = 'envelope/company_contact_add.html'
+    user = None
+    company = None
+    form = None
+    model = CompanyContact
+    object =None
+
+    @method_decorator(user_passes_test(check_active))
+    @method_decorator(verified_email_required)
+    def dispatch(self, *args, **kwargs):
+        return super(CompanyContactAdd, self).dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        self.user = request.user
+        slug = kwargs['company_slug']
+        self.company, allow_edit = get_company(slug, self.user)
+        return super(CompanyContactAdd, self).get(request, *args, **kwargs)
+
+
+    def post(self, request, *args, **kwargs):
+        self.upload_cacheform_list = []
+        self.resource_file_list = []
+        self.user = request.user
+        slug = kwargs['company_slug']
+        self.company, allow_edit = get_company(slug, self.user)
+
+        if self.form.is_valid():
+            return HttpResponseRedirect("/")
+        else:
+            return self.form_invalid(self.form)
+
+    def get_context_data(self, **kwargs):
+        context = super(CompanyContactAdd, self).get_context_data(**kwargs)
+        context['head_title'] = "Contact Company"
+        context['page_section'] = "Contact Company"
+        context['form'] = self.form
+        context['company'] = self.company
+        context.update(kwargs)
+        return super(CompanyContactAdd, self).get_context_data(**context)
+
+    def render_to_response(self, context, **response_kwargs):
+        response_kwargs.setdefault('content_type', self.content_type)
+        return self.response_class(
+            request=self.request,
+            template=self.get_template_names(),
+            context=context,
+            **response_kwargs
+        )
 
 
 def filter_spam(sender, request, form, **kwargs):

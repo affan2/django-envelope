@@ -7,9 +7,10 @@ except ImportError:  # pragma: no cover
     # Django 1.4 and 1.5
     from django.conf.urls.defaults import patterns, url
 
-from envelope.views import ContactView
+from envelope.views import ContactView, CompanyContactAdd
 
 
 urlpatterns = patterns('',
     url(r'^$', ContactView.as_view(), name='envelope-contact'),
+    url(r'^(?P<company_slug>[a-zA-Z0-9\-]+)/add/$', CompanyContactAdd.as_view(), name='company_contact'),
 )
