@@ -11,12 +11,13 @@ from smtplib import SMTPException
 
 from django import forms
 from django.core import mail
+from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
 from envelope import settings
 from envelope.signals import after_send
-
+from phonenumber_field.validators import validate_international_phonenumber
 
 logger = logging.getLogger('envelope.forms')
 
@@ -199,6 +200,7 @@ class ContactForm(BaseContactForm):
 
 
 #Todo phone number field
+#Todo plain text email
 #Todo city
 #Todo email
 class CompanyContactForm(BaseContactForm):
@@ -242,6 +244,15 @@ class CompanyContactForm(BaseContactForm):
             'message',
         ]
         self.fields['category'].choices = self.get_category_choices()
+
+
+    def clean_contact_phone(self):
+        try:
+            validate_international_phonenumber(self.cleaned_data['contact_phone'])
+        except ValidationError:
+            raise forms.ValidationError("You must enter a valid phone number (e.g. +411234567).")
+        return self.cleaned_data['contact_phone']
+
 
     def get_category_choices(self):
         """
