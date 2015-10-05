@@ -46,7 +46,7 @@ class BaseContactForm(forms.Form):
         ``envelope/email_body.txt``.
 
     """
-    sender = forms.CharField(label=_("From"))
+    sender = forms.CharField(label=_("Name"))
     email = forms.EmailField(label=_("Email"))
     subject = forms.CharField(label=_("Subject"))
     message = forms.CharField(label=_("Message"), widget=forms.Textarea())
@@ -198,7 +198,9 @@ class ContactForm(BaseContactForm):
         return dict(self.get_category_choices()).get(category)
 
 
-
+#Todo phone number field
+#Todo city
+#Todo email
 class CompanyContactForm(BaseContactForm):
     """
     The default contact form class.
@@ -218,7 +220,12 @@ class CompanyContactForm(BaseContactForm):
     ``get_category_choices()`` in a subclass.
     """
     category_choices = settings.CONTACT_CHOICES
-    category = forms.ChoiceField(label=_("Category"), choices=category_choices)
+    category = forms.ChoiceField(label=_("Subject"), choices=category_choices)
+
+    contact_company = forms.CharField(label=_("Company"))
+    contact_phone = forms.CharField(label=_("Phone Number"))
+    contact_job_title = forms.CharField(label=_("Job Title"))
+
 
     def __init__(self, *args, **kwargs):
         """
@@ -228,20 +235,13 @@ class CompanyContactForm(BaseContactForm):
         self.fields.keyOrder = [
             'sender',
             'email',
+            'contact_company',
+            'contact_phone',
+            'contact_job_title',
             'category',
-            'subject',
             'message',
         ]
         self.fields['category'].choices = self.get_category_choices()
-
-    def get_context(self):
-        """
-        Adds full category description to template variables in order
-        to display the category in email body.
-        """
-        context = super(CompanyContactForm, self).get_context()
-        context['category'] = self.get_category_display()
-        return context
 
     def get_category_choices(self):
         """
@@ -251,12 +251,41 @@ class CompanyContactForm(BaseContactForm):
         """
         return self.category_choices
 
-    def get_category_display(self):
-        """
-        Returns the displayed name of the selected category.
-        """
-        try:
-            category = int(self.cleaned_data['category'])
-        except (AttributeError, ValueError, KeyError):
-            category = None
-        return dict(self.get_category_choices()).get(category)
+
+#Todo phone number field
+#Todo city
+#Todo email
+# class ProductContactForm(CompanyContactForm):
+#     """
+#     The default contact form class.
+#
+#     This class extends the base form with a possibility to select
+#     message category. For example, user can ask a general question
+#     regarding the website or a more specific one, like "ask tech
+#     support" or "I want to speak to the manager".
+#
+#     The categories are controlled by configuring
+#     ``ENVELOPE_CONTACT_CHOICES`` in your settings.py. The value for this
+#     setting should be a tuple of 2-element tuples, as usual with Django
+#     choice fields. Keep first elements of those tuples as integer values
+#     (or use None for the category "Other").
+#
+#     You can additionally override ``category_choices`` or
+#     ``get_category_choices()`` in a subclass.
+#     """
+#
+#     def __init__(self, *args, **kwargs):
+#         """
+#         Category choice will be rendered above the subject field.
+#         """
+#         super(ProductContactForm, self).__init__(*args, **kwargs)
+#         self.fields.keyOrder = [
+#             'sender',
+#             'email',
+#             'contact_company',
+#             'contact_phone',
+#             'contact_job_title',
+#             'category',
+#             'message',
+#         ]
+#         self.fields['category'].choices = self.get_category_choices()

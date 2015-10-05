@@ -16,7 +16,7 @@ class BaseContact(models.Model):
     state = models.SmallIntegerField(
         verbose_name=_('State'),
         choices=STATE_TYPES,
-        default=0,
+        default=2,
     )
     user_email = models.EmailField()
     created = models.DateTimeField(
