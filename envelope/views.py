@@ -23,7 +23,7 @@ from allauth.account.decorators import verified_email_required
 from articles.utils import slugify_unique, check_active
 from companies.views import get_company
 from envelope import signals
-from envelope.forms import ContactForm, CompanyContactForm, ProductContactForm
+from envelope.forms import ContactForm, CompanyContactForm
 from envelope.models import CompanyContact
 
 
