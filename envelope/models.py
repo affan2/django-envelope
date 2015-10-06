@@ -18,7 +18,6 @@ class BaseContact(models.Model):
         choices=STATE_TYPES,
         default=2,
     )
-    user_email = models.EmailField()
     created = models.DateTimeField(
         verbose_name=_('Creation date'),
         auto_now_add=True,
@@ -40,6 +39,10 @@ class BaseContact(models.Model):
         related_name="%(app_label)s_%(class)s_updated_by_",
         null=True,
         blank=True,
+    )
+    user_email = models.EmailField()
+    user_name = models.TextField(
+        verbose_name=_('Name')
     )
     company = models.ForeignKey(
         Company,

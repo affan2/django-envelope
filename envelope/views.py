@@ -14,10 +14,11 @@ from django.http import HttpResponseBadRequest
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-
+from django.views.generic import ListView, DetailView
+from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 
 from allauth.account.decorators import verified_email_required
 from articles.utils import slugify_unique, check_active
@@ -25,6 +26,7 @@ from companies.views import get_company
 from envelope import signals
 from envelope.forms import ContactForm, CompanyContactForm
 from envelope.models import CompanyContact
+from general.tasks import task_send_email
 
 
 logger = logging.getLogger('envelope.views')
@@ -187,6 +189,7 @@ class CompanyContactAdd(CreateView):
         obj.company = self.company
         obj.status = 2
         obj.user_email = form.cleaned_data['email']
+        obj.user_name = form.cleaned_data['sender']
 
         if self.request.user.is_authenticated():
             obj.created_by = self.request.user
@@ -197,6 +200,17 @@ class CompanyContactAdd(CreateView):
         obj.subject = form.cleaned_data['category']
         obj.message_box = form.cleaned_data['message']
         obj.save()
+
+        email_list=[]
+        email_list.append(self.company.admin_primary.email)
+        for item in self.company.admins.all():
+            email_list.append(item.email)
+
+        task_send_email.delay(email_list, self.obj, 'companies',
+                              subject_template='query_subject',
+                              message_template='query_body',
+                              template_html=None,
+                              replyto=obj.user_email)
 
         # form.save()
         messages.info(self.request,
@@ -255,6 +269,70 @@ class CompanyContactAdd(CreateView):
             **response_kwargs
         )
 
+
+#Todo can be converted to all the contact list by replacing "CompanyContact" model with ContactBase Model
+class CompanyContactList(ListView):
+
+    allow_empty = True
+    paginate_by = 10
+    template_name = 'envelope/listing.html'
+    model = CompanyContact
+    company = None
+    email_type = None
+
+    def get_queryset(self):
+        queryset = super(CompanyContactList, self).get_queryset()
+        queryset = queryset.filter(company=self.company).order_by('-created')
+        if self.email_type == '-1':                                   #Deleted emails
+            queryset = queryset.filter(company=self.company, state=-1)
+        elif self.email_type == '1':                                  #Replied emails
+            queryset = queryset.filter(company=self.company, state=1)
+        elif self.email_type == '2':                                  #Pending reply emails
+            queryset = queryset.filter(company=self.company, state=2)
+        return queryset
+
+
+    def get(self, request, *args, **kwargs):
+        try:
+            self.email_type = kwargs['email_type']
+        except KeyError:
+            self.email_type = '0'
+        slug = kwargs['company_slug']
+        self.user = request.user
+        self.company, allow_edit = get_company(slug, self.user)
+        return super(CompanyContactList, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(CompanyContactList, self).get_context_data(**kwargs)
+        context['now'] = timezone.now()
+        context['company'] = self.company
+        context['email_type'] = self.email_type
+        return context
+
+
+class CompanyContactDetail(DetailView):
+
+    template_name = 'envelope/detail.html'
+    model = CompanyContact
+    company = None
+    object = None
+
+
+    def get(self, request, *args, **kwargs):
+        email_id = kwargs['email_id']
+        slug = kwargs['company_slug']
+        self.user = request.user
+        self.company, allow_edit = get_company(slug, self.user)
+        self.object = CompanyContact.objects.get(id=email_id)
+        return super(CompanyContactList, self).get(request, *args, **kwargs)
+
+
+    def get_context_data(self, **kwargs):
+        context = super(CompanyContactDetail, self).get_context_data(**kwargs)
+        context['now'] = timezone.now()
+        context['company'] = self.company
+        context['item'] = self.object
+        return context
 
 
 # class ProductContactAdd(CreateView):

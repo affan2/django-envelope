@@ -198,10 +198,8 @@ class ContactForm(BaseContactForm):
             category = None
         return dict(self.get_category_choices()).get(category)
 
-
-#Todo phone number field
-#Todo plain text email
 #Todo city
+#Todo plain text email
 #Todo email
 class CompanyContactForm(BaseContactForm):
     """
