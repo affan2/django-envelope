@@ -18,6 +18,7 @@ from django.utils.translation import ugettext_lazy as _
 from envelope import settings
 from envelope.signals import after_send
 from phonenumber_field.validators import validate_international_phonenumber
+from envelope.constants import PRODUCT_CONTACT_CHOICES, COMPANY_CONTACT_CHOICES
 
 logger = logging.getLogger('envelope.forms')
 
@@ -197,104 +198,3 @@ class ContactForm(BaseContactForm):
         except (AttributeError, ValueError, KeyError):
             category = None
         return dict(self.get_category_choices()).get(category)
-
-#Todo city
-#Todo plain text email
-#Todo email
-class CompanyContactForm(BaseContactForm):
-    """
-    The default contact form class.
-
-    This class extends the base form with a possibility to select
-    message category. For example, user can ask a general question
-    regarding the website or a more specific one, like "ask tech
-    support" or "I want to speak to the manager".
-
-    The categories are controlled by configuring
-    ``ENVELOPE_CONTACT_CHOICES`` in your settings.py. The value for this
-    setting should be a tuple of 2-element tuples, as usual with Django
-    choice fields. Keep first elements of those tuples as integer values
-    (or use None for the category "Other").
-
-    You can additionally override ``category_choices`` or
-    ``get_category_choices()`` in a subclass.
-    """
-    category_choices = settings.CONTACT_CHOICES
-    category = forms.ChoiceField(label=_("Subject"), choices=category_choices)
-
-    contact_company = forms.CharField(label=_("Company"))
-    contact_phone = forms.CharField(label=_("Phone Number"))
-    contact_job_title = forms.CharField(label=_("Job Title"))
-
-
-    def __init__(self, *args, **kwargs):
-        """
-        Category choice will be rendered above the subject field.
-        """
-        super(CompanyContactForm, self).__init__(*args, **kwargs)
-        self.fields.keyOrder = [
-            'sender',
-            'email',
-            'contact_company',
-            'contact_phone',
-            'contact_job_title',
-            'category',
-            'message',
-        ]
-        self.fields['category'].choices = self.get_category_choices()
-
-
-    def clean_contact_phone(self):
-        try:
-            validate_international_phonenumber(self.cleaned_data['contact_phone'])
-        except ValidationError:
-            raise forms.ValidationError("You must enter a valid phone number (e.g. +411234567).")
-        return self.cleaned_data['contact_phone']
-
-
-    def get_category_choices(self):
-        """
-        Returns a tuple of 2-element category tuples.
-
-        Override this method to customize the generation of categories.
-        """
-        return self.category_choices
-
-
-#Todo phone number field
-#Todo city
-#Todo email
-# class ProductContactForm(CompanyContactForm):
-#     """
-#     The default contact form class.
-#
-#     This class extends the base form with a possibility to select
-#     message category. For example, user can ask a general question
-#     regarding the website or a more specific one, like "ask tech
-#     support" or "I want to speak to the manager".
-#
-#     The categories are controlled by configuring
-#     ``ENVELOPE_CONTACT_CHOICES`` in your settings.py. The value for this
-#     setting should be a tuple of 2-element tuples, as usual with Django
-#     choice fields. Keep first elements of those tuples as integer values
-#     (or use None for the category "Other").
-#
-#     You can additionally override ``category_choices`` or
-#     ``get_category_choices()`` in a subclass.
-#     """
-#
-#     def __init__(self, *args, **kwargs):
-#         """
-#         Category choice will be rendered above the subject field.
-#         """
-#         super(ProductContactForm, self).__init__(*args, **kwargs)
-#         self.fields.keyOrder = [
-#             'sender',
-#             'email',
-#             'contact_company',
-#             'contact_phone',
-#             'contact_job_title',
-#             'category',
-#             'message',
-#         ]
-#         self.fields['category'].choices = self.get_category_choices()

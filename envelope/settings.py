@@ -13,7 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 DEFAULT_CONTACT_CHOICES = (
     ('', _("Choose")),
     (10, _("A general question regarding the website")),
-    (None, _("Other")),
+    (20, _("Other")),
 )
 
 FROM_EMAIL = settings.DEFAULT_FROM_EMAIL
