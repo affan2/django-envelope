@@ -1,27 +1,29 @@
+from django.utils.translation import ugettext_lazy as _
+
 STATE_TYPES = (
-    (-1, u'Deleted'),
-    (1, u'Replied'),
-    (2, u'Pending'),
+    (-1, _('Deleted')),
+    (1, _('Replied')),
+    (2, _('Pending')),
 )
 
 
 COMPANY_CONTACT_CHOICES = (
     ("", u''),
-    ("First choice", u'First choice'),
-    ("Second choice", u'Second choice'),
-    ("Third choice", u'Third choice'),
+    ("First choice", _('First choice')),
+    ("Second choice", _('Second choice')),
+    ("Third choice", _('Third choice')),
 )
 
 PRODUCT_CONTACT_CHOICES = (
     ("", u''),
-    ("First choice", u'First choice'),
-    ("Second choice", u'Second choice'),
-    ("Third choice", u'Third choice'),
+    ("First choice", _('First choice')),
+    ("Second choice", _('Second choice')),
+    ("Third choice", _('Third choice')),
 )
 
 SOLUTIONS_CONTACT_CHOICES = (
     ("", u''),
-    ("First choice", u'First choice'),
-    ("Second choice", u'Second choice'),
-    ("Third choice", u'Third choice'),
+    ("First choice", _('First choice')),
+    ("Second choice", _('Second choice')),
+    ("Third choice", _('Third choice')),
 )
