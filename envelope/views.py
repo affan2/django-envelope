@@ -135,7 +135,7 @@ class BaseContact(CreateView):
         if user.is_authenticated():
             # the user might not have a full name set in the model
             if user.get_full_name():
-                sender = '%s (%s)' % (user.username, user.get_full_name())
+                sender = '%s' % user.get_full_name()
             else:
                 sender = user.username
             initial.update({
