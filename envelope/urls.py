@@ -9,8 +9,7 @@ except ImportError:  # pragma: no cover
 
 from envelope.views import ContactView
 
+
 urlpatterns = patterns('',
     url(r'^$', ContactView.as_view(), name='envelope-contact'),
-    # url(r'^detail/(?P<company_slug>[a-zA-Z0-9\-]+)-(?P<email_id>[a-zA-Z0-9\-]+)$', CompanyContactDetail.as_view(), name='company_contact_detail'),
-
 )

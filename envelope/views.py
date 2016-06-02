@@ -13,7 +13,6 @@ from django.shortcuts import redirect
 from django.views.generic import FormView
 from django.views.generic.edit import CreateView
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.flatpages.models import FlatPage
 
 from envelope import signals
 from envelope.forms import ContactForm
@@ -59,16 +58,6 @@ class ContactView(FormView):
     form_kwargs = {}
     template_name = 'envelope/contact.html'
     success_url = None
-    current_url = None
-    flatpage = None
-
-    def get(self, request, *args, **kwargs):
-        self.current_url = self.request.path_info
-        try:
-            self.flatpage = FlatPage.objects.get(url="/contact/")
-        except FlatPage:
-            self.flatpage = None
-        return super(ContactView, self).get(request, *args, **kwargs)
 
     def get_success_url(self):
         """
@@ -127,20 +116,6 @@ class ContactView(FormView):
                        _("There was an error in the contact form."),
                        fail_silently=True)
         return self.render_to_response(self.get_context_data(form=form))
-
-    def render_to_response(self, context, **response_kwargs):
-        response_kwargs.setdefault('content_type', self.content_type)
-
-        context.update({
-            'flatpage': self.flatpage,
-        })
-
-        return self.response_class(
-            request=self.request,
-            template=self.get_template_names(),
-            context=context,
-            **response_kwargs
-        )
 
 
 class BaseContact(CreateView):
