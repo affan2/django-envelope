@@ -34,7 +34,7 @@ class BaseContact(models.Model):
         null=True,
         blank=True,
     )
-    user_email = models.EmailField()
+    user_email = models.EmailField(verbose_name=_('Email'))
 
     class Meta:
         abstract = True
