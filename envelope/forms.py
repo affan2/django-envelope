@@ -15,6 +15,9 @@ from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
+# Needed as such to avoid naming conflict with envelope.settings.
+from django.conf import settings as project_settings
+
 from envelope import settings
 from envelope.signals import after_send
 from phonenumber_field.validators import validate_international_phonenumber
@@ -56,6 +59,11 @@ class BaseContactForm(forms.Form):
     subject_intro = settings.SUBJECT_INTRO
     from_email = settings.FROM_EMAIL
     email_recipients = settings.EMAIL_RECIPIENTS
+    # A copy of the email should also go to admins.
+    # This prevents the need to visit the db for such tasks.
+    # Business rule, admins should get a copy of any such email or message, unless explicitly stated otherwise.
+    for admin in project_settings.ADMINS:
+        email_recipients.append(admin[1])
     template_name = 'envelope/email_body.txt'
 
     def __init__(self, *args, **kwargs):
