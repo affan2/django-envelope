@@ -1,20 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
+from __future__ import unicode_literals, print_function
 
 """
 Unit tests for ``django-envelope`` views.
 """
 
-import os
+import unittest
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
-from django.test.utils import override_settings
-from django.utils import unittest
-from django.utils.translation import ugettext_lazy as _
 
 try:
     import honeypot
@@ -24,18 +21,10 @@ except ImportError:
 from envelope import signals
 
 
-test_templates = (
-    os.path.join(os.path.dirname(__file__), 'templates'),
-    os.path.join(os.path.dirname(__file__), '../templates'),
-)
-
-
-@override_settings(TEMPLATE_DIRS=test_templates)
 class ContactViewTestCase(TestCase):
     """
     Unit tests for contact form view.
     """
-    urls = 'envelope.tests.urls'
 
     def setUp(self):
         self.url = reverse('envelope-contact')
@@ -45,7 +34,6 @@ class ContactViewTestCase(TestCase):
         self.form_data = {
             'sender': 'zbyszek',
             'email': 'test@example.com',
-            'category': 10,
             'subject': 'A subject',
             'message': 'Hello there!',
             self.honeypot: '',
@@ -112,8 +100,6 @@ class ContactViewTestCase(TestCase):
         self.form_data.update({'sender': ''})
         response = self.client.post(self.url, self.form_data)
         self.assertEqual(response.status_code, 200)
-        flash_error_message = _("There was en error in the contact form.")
-        self.assertContains(response, flash_error_message)
 
     def test_form_successful(self):
         """
@@ -122,10 +108,6 @@ class ContactViewTestCase(TestCase):
         response = self.client.post(self.url, self.form_data, follow=True)
         self.assertRedirects(response, self.url)
         self.assertEqual(len(response.redirect_chain), 1)
-        flash_error_message = _("There was en error in the contact form.")
-        self.assertNotContains(response, flash_error_message)
-        flash_success_message = _("Thank you for your message.")
-        self.assertContains(response, flash_success_message)
 
     def test_signal_before_send(self):
         """
@@ -159,7 +141,7 @@ class ContactViewTestCase(TestCase):
         You can change the default template used to render the form.
         """
         response = self.client.get(self.customized_url)
-        self.assertTemplateUsed(response, "contact.html")
+        self.assertTemplateUsed(response, "customized_contact.html")
 
     def test_custom_success_url(self):
         """

@@ -17,6 +17,8 @@ Example::
         url(r'^contact/', ContactView.as_view()),
     )
 
+.. _subclassing-contact-view:
+
 If you want some more fine-grained control over the contact form, you can
 customize the view class. You can inherit from :class:`envelope.views.ContactView`
 and set class attributes in your derived view class, or simply pass
@@ -67,12 +69,11 @@ The following options (as well as those already in Django's `FormView`_) are rec
   "thank you for your feedback", displayed after the form is successfully
   submitted. If left unset, the view redirects to itself.
 
-* ``form_kwargs``: Additional kwargs to be used in the creation of the form. Use with :class:`envelope.forms.BaseContactForm` form arguments for dynamic customization of the form.
+* ``form_kwargs``: Additional kwargs to be used in the creation of the form. Use with :class:`envelope.forms.ContactForm` form arguments for dynamic customization of the form.
 
-You can also subclass :class:`envelope.forms.BaseContactForm` or
-:class:`envelope.forms.ContactForm` to further customize your form processing.
-Either set the following options as keyword arguments to ``__init__``, or override
-class attributes.
+You can also subclass :class:`envelope.forms.ContactForm` to further customize
+your form processing. Either set the following options as keyword arguments to
+``__init__``, or override class attributes.
 
 * ``subject_intro``: Prefix used to create the subject line. Default is ``settings.ENVELOPE_SUBJECT_INTRO``.
 
@@ -80,7 +81,9 @@ class attributes.
 
 * ``email_recipients``: List of email addresses to send the email to. Defaults to ``settings.ENVELOPE_EMAIL_RECIPIENTS``.
 
-* ``template_name``: Template used to render the email message. Defaults to ``envelope/email_body.txt``. You can use any of the form field names as template variables.
+* ``template_name``: Template used to render the plaintext email message. Defaults to ``envelope/email_body.txt``. You can use any of the form field names as template variables.
+
+* ``html_template_name``: Template used to render the HTML email message. Defaults to ``envelope/email_body.html``.
 
 Example of a custom form::
 
@@ -89,7 +92,8 @@ Example of a custom form::
 
     class MyContactForm(ContactForm):
         subject_intro = "URGENT: "
-        template_name = "contact_email.html"
+        template_name = "plaintext_email.txt"
+        html_template_name = "contact_email.html"
 
     # urls.py
     from django.conf.urls import patterns, url

@@ -24,26 +24,30 @@ Running tests
 .. note::
    It is recommended to work in a virtualenv_.
 
-All dependencies required for running tests and building documentation are
-specified in the file ``requirements.txt``.
+All dependencies required for running tests are specified in the file
+``test_requirements.txt``.
+
+.. note::
+   If you get errors such as ``ImportError: No module named mock`` while
+   running tests, you're probably on Python 2 (Python 3 has ``mock`` in
+   standard library). To fix that, run ``pip install mock``.
 
 To get the tests up and running, follow these commands::
 
-    virtualenv --no-site-packages envelope
+    virtualenv envelope
     cd envelope
     source bin/activate
-    git clone git://github.com/zsiciarz/django-envelope.git
+    git clone https://github.com/zsiciarz/django-envelope.git
     cd django-envelope
-    python setup.py develop
-    pip install -r requirements.txt
-    python runtests.py
+    pip install -r test_requirements.txt
+    make test
 
 .. note::
    First three steps can be simplified by using virtualenvwrapper_.
 
 To get a coverage report, replace the last command with::
 
-    coverage run runtests.py && coverage html
+    make coverage
 
 
 CI Server

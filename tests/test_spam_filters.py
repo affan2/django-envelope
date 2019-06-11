@@ -6,9 +6,9 @@ from __future__ import unicode_literals
 Unit tests for spam filters.
 """
 
+import unittest
+
 from django.conf import settings
-from django.test import TestCase
-from django.utils import unittest
 
 try:
     import honeypot
@@ -29,13 +29,12 @@ class FakeRequest(object):
         self.POST = {}
 
 
-class CheckHoneypotTestCase(TestCase):
+class CheckHoneypotTestCase(unittest.TestCase):
     """
     Unit tests for ``check_honeypot`` spam filter.
     """
 
     def setUp(self):
-
         self.form = FakeForm()
         self.request = FakeRequest()
         self.honeypot = getattr(settings, 'HONEYPOT_FIELD_NAME', 'email2')

@@ -9,6 +9,7 @@ Project Lead
 Contributors
 ------------
 
+* aleprovencio
 * Antti Kaihola
 * Giorgos Logiotatidis
 * Mark Lavin
@@ -17,3 +18,7 @@ Contributors
 * Vitaly Babiy
 * Jacek Tomaszewski
 * Anders Petersson
+* Quentin Caron
+* Kristaps K
+* Javi Palanca
+* George Tantiras

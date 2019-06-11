@@ -26,7 +26,7 @@ from envelope.constants import PRODUCT_CONTACT_CHOICES, COMPANY_CONTACT_CHOICES
 logger = logging.getLogger('envelope.forms')
 
 
-class BaseContactForm(forms.Form):
+class ContactForm(forms.Form):
     """
     Base contact form class.
 
@@ -47,8 +47,12 @@ class BaseContactForm(forms.Form):
         ``settings.ENVELOPE_EMAIL_RECIPIENTS``.
 
     ``template_name``
-        Template used to render the email message. Defaults to
+        Template used to render the (plaintext) email message. Defaults to
         ``envelope/email_body.txt``.
+
+    ``html_template_name``
+        Template used to render the HTML email message. Defaults to
+        ``envelope/email_body.html``.
 
     """
     sender = forms.CharField(label=_("Name"))
@@ -65,12 +69,13 @@ class BaseContactForm(forms.Form):
     for admin in project_settings.ADMINS:
         email_recipients.append(admin[1])
     template_name = 'envelope/email_body.txt'
+    html_template_name = 'envelope/email_body.html'
 
     def __init__(self, *args, **kwargs):
         for kwarg in list(kwargs):
             if hasattr(self, kwarg):
                 setattr(self, kwarg, kwargs.pop(kwarg))
-        super(BaseContactForm, self).__init__(*args, **kwargs)
+        super(ContactForm, self).__init__(*args, **kwargs)
 
     def save(self):
         """
@@ -82,7 +87,7 @@ class BaseContactForm(forms.Form):
         context = self.get_context()
         message_body = render_to_string(self.get_template_names(), context)
         try:
-            message = mail.EmailMessage(
+            message = mail.EmailMultiAlternatives(
                 subject=subject,
                 body=message_body,
                 from_email=from_email,
@@ -91,6 +96,9 @@ class BaseContactForm(forms.Form):
                     'Reply-To': self.cleaned_data['email']
                 }
             )
+            if settings.USE_HTML_EMAIL:
+                html_body = render_to_string(self.html_template_name, context)
+                message.attach_alternative(html_body, "text/html")
             message.send()
             after_send.send(sender=self.__class__, message=message, form=self)
             logger.info(_("Contact form submitted and sent (from: %s)") %
@@ -143,66 +151,3 @@ class BaseContactForm(forms.Form):
         Override to use your own method choosing a template name.
         """
         return self.template_name
-
-
-class ContactForm(BaseContactForm):
-    """
-    The default contact form class.
-
-    This class extends the base form with a possibility to select
-    message category. For example, user can ask a general question
-    regarding the website or a more specific one, like "ask tech
-    support" or "I want to speak to the manager".
-
-    The categories are controlled by configuring
-    ``ENVELOPE_CONTACT_CHOICES`` in your settings.py. The value for this
-    setting should be a tuple of 2-element tuples, as usual with Django
-    choice fields. Keep first elements of those tuples as integer values
-    (or use None for the category "Other").
-
-    You can additionally override ``category_choices`` or
-    ``get_category_choices()`` in a subclass.
-    """
-    category_choices = settings.CONTACT_CHOICES
-    category = forms.ChoiceField(label=_("Category"), choices=category_choices)
-
-    def __init__(self, *args, **kwargs):
-        """
-        Category choice will be rendered above the subject field.
-        """
-        super(ContactForm, self).__init__(*args, **kwargs)
-        self.fields.keyOrder = [
-            'sender',
-            'email',
-            'category',
-            'subject',
-            'message',
-        ]
-        self.fields['category'].choices = self.get_category_choices()
-
-    def get_context(self):
-        """
-        Adds full category description to template variables in order
-        to display the category in email body.
-        """
-        context = super(ContactForm, self).get_context()
-        context['category'] = self.get_category_display()
-        return context
-
-    def get_category_choices(self):
-        """
-        Returns a tuple of 2-element category tuples.
-
-        Override this method to customize the generation of categories.
-        """
-        return self.category_choices
-
-    def get_category_display(self):
-        """
-        Returns the displayed name of the selected category.
-        """
-        try:
-            category = int(self.cleaned_data['category'])
-        except (AttributeError, ValueError, KeyError):
-            category = None
-        return dict(self.get_category_choices()).get(category)
