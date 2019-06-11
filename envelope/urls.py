@@ -2,7 +2,7 @@
 
 from django.conf.urls import url
 
-from envelope.views import ContactView
+from .views import ContactView
 
 
 urlpatterns = [

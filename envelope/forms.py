@@ -11,17 +11,14 @@ from smtplib import SMTPException
 
 from django import forms
 from django.core import mail
-from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
 # Needed as such to avoid naming conflict with envelope.settings.
 from django.conf import settings as project_settings
 
-from envelope import settings
-from envelope.signals import after_send
-from phonenumber_field.validators import validate_international_phonenumber
-from envelope.constants import PRODUCT_CONTACT_CHOICES, COMPANY_CONTACT_CHOICES
+from . import settings
+from .signals import after_send
 
 logger = logging.getLogger('envelope.forms')
 

@@ -10,7 +10,7 @@ import unittest
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase
 
 try:
@@ -18,7 +18,7 @@ try:
 except ImportError:
     honeypot = None
 
-from envelope import signals
+from .. import signals
 
 
 class ContactViewTestCase(TestCase):

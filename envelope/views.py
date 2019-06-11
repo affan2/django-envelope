@@ -14,8 +14,8 @@ from django.views.generic import FormView
 from django.views.generic.edit import CreateView
 from django.utils.translation import ugettext_lazy as _
 
-from envelope import signals
-from envelope.forms import ContactForm
+from . import signals
+from .forms import ContactForm
 
 logger = logging.getLogger('envelope.views')
 

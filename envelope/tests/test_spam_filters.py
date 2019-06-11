@@ -15,7 +15,7 @@ try:
 except ImportError:
     honeypot = None
 
-from envelope.spam_filters import check_honeypot
+from .. spam_filters import check_honeypot
 
 
 # mocking form and request, no need to use the real things here

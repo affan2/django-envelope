@@ -9,12 +9,8 @@ Unit tests for ``django-envelope`` forms.
 import unittest
 from smtplib import SMTPException
 
-try:
-    from unittest.mock import patch
-except ImportError:
-    from mock import patch
-
-from envelope.forms import ContactForm
+from unittest.mock import patch
+from .. forms import ContactForm
 
 
 class ContactFormTestCase(unittest.TestCase):

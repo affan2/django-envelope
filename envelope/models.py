@@ -22,6 +22,7 @@ class BaseContact(models.Model):
         related_name="%(app_label)s_%(class)s_created_by_",
         null=True,
         blank=True,
+        on_delete=models.CASCADE,
     )
     updated = models.DateTimeField(
         verbose_name=_('Update date'),
@@ -33,6 +34,7 @@ class BaseContact(models.Model):
         related_name="%(app_label)s_%(class)s_updated_by_",
         null=True,
         blank=True,
+        on_delete=models.CASCADE,
     )
     user_email = models.EmailField(verbose_name=_('Email'))
 

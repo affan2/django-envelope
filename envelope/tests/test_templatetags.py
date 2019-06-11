@@ -9,7 +9,7 @@ Unit tests for ``django-envelope`` template tags.
 from django.test import TestCase
 from django.template import TemplateSyntaxError
 
-from envelope.templatetags.envelope_tags import render_contact_form
+from .. templatetags.envelope_tags import render_contact_form
 
 
 class RenderContactFormTestCase(TestCase):

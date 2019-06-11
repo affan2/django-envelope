@@ -190,3 +190,4 @@ Although the ``category`` field was removed from the default form class in
             except (AttributeError, ValueError, KeyError):
                 category = None
             return dict(self.CATEGORY_CHOICES).get(category)
+

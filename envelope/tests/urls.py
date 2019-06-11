@@ -1,6 +1,6 @@
 from django.conf.urls import include, url
 
-from envelope.views import ContactView
+from .. views import ContactView
 
 
 class SubclassedContactView(ContactView):

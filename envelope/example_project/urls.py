@@ -4,7 +4,7 @@ from django.conf.urls import include, url
 
 from braces.views import FormMessagesMixin
 
-from envelope.views import ContactView
+from .. views import ContactView
 
 
 class MessagesContactView(FormMessagesMixin, ContactView):
