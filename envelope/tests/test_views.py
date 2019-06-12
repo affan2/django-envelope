@@ -27,6 +27,7 @@ class ContactViewTestCase(TestCase):
     """
 
     def setUp(self):
+        # import pdb;pdb.set_trace()
         self.url = reverse('envelope-contact')
         self.customized_url = reverse('customized_class_contact')
         self.subclassed_url = reverse('subclassed_class_contact')
