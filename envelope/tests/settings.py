@@ -64,7 +64,7 @@ TEMPLATES = [
     }
 ]
 
-ROOT_URLCONF = 'tests.urls'
+ROOT_URLCONF = '.urls'
 
 EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 
