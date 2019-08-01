@@ -50,8 +50,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'django-envelope'
-copyright = u'2011-2017, Zbigniew Siciarz'
+project = 'django-envelope'
+copyright = '2011-2017, Zbigniew Siciarz'
 
 intersphinx_mapping = {
     'django': ('https://docs.djangoproject.com/en/dev/', 'http://docs.djangoproject.com/en/dev/_objects/')
@@ -185,8 +185,8 @@ htmlhelp_basename = 'django-envelopedoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'django-envelope.tex', u'django-envelope Documentation',
-   u'Zbigniew Siciarz', 'manual'),
+  ('index', 'django-envelope.tex', 'django-envelope Documentation',
+   'Zbigniew Siciarz', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -218,6 +218,6 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'django-envelope', u'django-envelope Documentation',
-     [u'Zbigniew Siciarz'], 1)
+    ('index', 'django-envelope', 'django-envelope Documentation',
+     ['Zbigniew Siciarz'], 1)
 ]

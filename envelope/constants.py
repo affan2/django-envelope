@@ -8,21 +8,21 @@ STATE_TYPES = (
 
 
 COMPANY_CONTACT_CHOICES = (
-    ("", u''),
+    ("", ''),
     ("First choice", _('First choice')),
     ("Second choice", _('Second choice')),
     ("Third choice", _('Third choice')),
 )
 
 PRODUCT_CONTACT_CHOICES = (
-    ("", u''),
+    ("", ''),
     ("First choice", _('First choice')),
     ("Second choice", _('Second choice')),
     ("Third choice", _('Third choice')),
 )
 
 SOLUTIONS_CONTACT_CHOICES = (
-    ("", u''),
+    ("", ''),
     ("First choice", _('First choice')),
     ("Second choice", _('Second choice')),
     ("Third choice", _('Third choice')),
