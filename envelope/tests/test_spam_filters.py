@@ -9,6 +9,7 @@ Unit tests for spam filters.
 import unittest
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 
 try:
     import honeypot

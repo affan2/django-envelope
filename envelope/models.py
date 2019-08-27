@@ -1,8 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
 from .constants import STATE_TYPES
+
+from django.contrib.auth import get_user_model
 
 
 class BaseContact(models.Model):
@@ -18,7 +20,7 @@ class BaseContact(models.Model):
         editable=False,
     )
     created_by = models.ForeignKey(
-        User,
+        get_user_model(),
         related_name="%(app_label)s_%(class)s_created_by_",
         null=True,
         blank=True,
@@ -30,7 +32,7 @@ class BaseContact(models.Model):
         editable=False,
     )
     updated_by = models.ForeignKey(
-        User,
+        get_user_model(),
         related_name="%(app_label)s_%(class)s_updated_by_",
         null=True,
         blank=True,
