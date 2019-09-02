@@ -21,7 +21,7 @@ class BaseContact(models.Model):
     )
     created_by = models.ForeignKey(
         get_user_model(),
-        related_name="%(app_label)s_%(class)s_created_by_",
+        related_name="%(app_label)s_%(class)s_created_by",
         null=True,
         blank=True,
         on_delete=models.CASCADE,
@@ -33,7 +33,7 @@ class BaseContact(models.Model):
     )
     updated_by = models.ForeignKey(
         get_user_model(),
-        related_name="%(app_label)s_%(class)s_updated_by_",
+        related_name="%(app_label)s_%(class)s_updated_by",
         null=True,
         blank=True,
         on_delete=models.CASCADE,
