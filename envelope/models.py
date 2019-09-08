@@ -4,11 +4,10 @@ from django.utils.translation import ugettext_lazy as _
 
 from .constants import STATE_TYPES
 
-from django.contrib.auth import get_user_model
+from django.conf import settings
 
 
 class BaseContact(models.Model):
-
     state = models.SmallIntegerField(
         verbose_name=_('State'),
         choices=STATE_TYPES,
@@ -20,7 +19,7 @@ class BaseContact(models.Model):
         editable=False,
     )
     created_by = models.ForeignKey(
-        get_user_model(),
+        settings.AUTH_USER_MODEL,
         related_name="%(app_label)s_%(class)s_created_by",
         null=True,
         blank=True,
@@ -32,7 +31,7 @@ class BaseContact(models.Model):
         editable=False,
     )
     updated_by = models.ForeignKey(
-        get_user_model(),
+        settings.AUTH_USER_MODEL,
         related_name="%(app_label)s_%(class)s_updated_by",
         null=True,
         blank=True,
