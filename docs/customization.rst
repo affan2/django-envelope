@@ -14,7 +14,7 @@ Example::
     from envelope.views import ContactView
 
     urlpatterns = patterns('',
-        url(r'^contact/', ContactView.as_view()),
+        re_path(r'^contact/', ContactView.as_view()),
     )
 
 .. _subclassing-contact-view:
@@ -38,7 +38,7 @@ Example (using a subclass)::
     from some_app.views import MyContactView
 
     urlpatterns = patterns('',
-        url(r'^contact/', MyContactView.as_view()),
+        re_path(r'^contact/', MyContactView.as_view()),
     )
 
 Example (setting attributes in place)::
@@ -48,7 +48,7 @@ Example (setting attributes in place)::
     from envelope.views import ContactView
 
     urlpatterns = patterns('',
-        url(r'^contact/', ContactView.as_view(
+        re_path(r'^contact/', ContactView.as_view(
             template_name="my_contact.html",
             success_url="/thank/you/kind/sir/"
         )),
@@ -101,7 +101,7 @@ Example of a custom form::
     from forms import MyContactForm
 
     urlpatterns = patterns('',
-        url(r'^contact/', ContactView.as_view(form_class=MyContactForm)),
+        re_path(r'^contact/', ContactView.as_view(form_class=MyContactForm)),
     )
 
 

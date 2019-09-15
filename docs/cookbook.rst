@@ -103,7 +103,7 @@ or just use it in your urls.py if you directly reference :class:`~envelope.views
 
 
     urlpatterns = patterns('',
-        url(r'^contact/', ContactView.as_view(form_class=MyContactForm)),
+        re_path(r'^contact/', ContactView.as_view(form_class=MyContactForm)),
     )
 
 Displaying form messages nicely
